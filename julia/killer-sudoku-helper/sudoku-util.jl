@@ -1,15 +1,14 @@
-function combinations_in_cage(s, c)
-    ps = powerset(collect(1:9))
-    filter(xs -> length(xs) == c && sum(xs) == s, ps) |> sort
+function powerset(N) 
+    combinations = Vector{Int}[[]]
+    for x in 1:N, y in eachindex(combinations)
+        push!(combinations, [combinations[y]; x])
+    end
+    return combinations
 end
-function powerset(xs)
-  result = [[]]
-  for elem in xs, j in eachindex(result)
-      push!(result, [result[j] ; elem])
-  end
-  result
+const POWERSET = powerset(9)
+function combinations_in_cage(sum_of, cells, restrictions)
+    filter(y -> all(x -> (x ∉ y), restrictions), combinations_in_cage(sum_of, cells))
 end
-function combinations_in_cage(s, c, r)
-  combinations = combinations_in_cage(s, c)
-  filter(xs -> all(x -> (x ∉ xs), r), combinations)
+function combinations_in_cage(sum_of, cells)
+    filter(z -> length(z) == cells && sum(z) == sum_of, POWERSET) |> sort
 end
